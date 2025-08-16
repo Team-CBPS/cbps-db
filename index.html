@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>CBPS-DB App & Plugin Browser</title>
+    <title>CBPS-DB</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 2em; background: #f8f9fa; }
         h1 { text-align: center; }
@@ -25,7 +25,7 @@
             <th>Author</th>
             <th>Type</th>
             <th>Download</th>
-            <th>Readme</th>
+            <th>README</th>
         </tr>
         </thead>
         <tbody>
@@ -73,7 +73,7 @@
 
         function createReadmeLink(url) {
             if (!url || url === "None") return '';
-            return `<a href="${url}" target="_blank">Readme</a>`;
+            return `<a href="${url}" target="_blank">README</a>`;
         }
 
         function createIcon(url, name) {
