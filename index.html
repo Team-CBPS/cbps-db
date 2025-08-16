@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CBPS Database Revival</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #eee;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #0f0;
+    }
+    #search {
+      display: block;
+      margin: 20px auto;
+      padding: 10px;
+      width: 60%;
+      border-radius: 8px;
+      border: 1px solid #555;
+      background: #222;
+      color: #fff;
+      font-size: 16px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #333;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background: #222;
+      color: #0f0;
+    }
+    tr:nth-child(even) {
+      background: #1a1a1a;
+    }
+    .download {
+      color: #0f0;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    .download:hover {
+      color: #9f9;
+    }
+  </style>
+</head>
+<body>
+  <h1>CBPS Database Revival</h1>
+  <input type="text" id="search" placeholder="Search plugins & apps...">
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Author</th>
+        <th>Version</th>
+        <th>Description</th>
+        <th>Download</th>
+      </tr>
+    </thead>
+    <tbody id="table-body"></tbody>
+  </table>
+
+  <script>
+    const csvUrl = "https://raw.githubusercontent.com/SSMG4/cbps-db/main/cbpsdb.csv";
+    const tableBody = document.getElementById("table-body");
+    const searchInput = document.getElementById("search");
+    let dbData = [];
+
+    async function loadCSV() {
+      try {
+        const res = await fetch(csvUrl);
+        const text = await res.text();
+        parseCSV(text);
+        renderTable(dbData);
+      } catch (e) {
+        tableBody.innerHTML = "<tr><td colspan='5' style='color:red;'>Failed to load database.</td></tr>";
+        console.error(e);
+      }
+    }
+
+    function parseCSV(text) {
+      const rows = text.split("\n").map(r => r.split(","));
+      const headers = rows.shift(); // first row = headers
+      dbData = rows
+        .filter(r => r.length >= 5)
+        .map(r => ({
+          name: r[0].trim(),
+          author: r[1].trim(),
+          version: r[2].trim(),
+          desc: r[3].trim(),
+          url: r[4].trim()
+        }));
+    }
+
+    function renderTable(data) {
+      tableBody.innerHTML = "";
+      data.forEach(item => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${item.name || "Unknown"}</td>
+          <td>${item.author || "N/A"}</td>
+          <td>${item.version || "N/A"}</td>
+          <td>${item.desc || ""}</td>
+          <td>${item.url ? `<a class="download" href="${item.url}" target="_blank">Download</a>` : ""}</td>
+        `;
+        tableBody.appendChild(tr);
+      });
+    }
+
+    searchInput.addEventListener("input", () => {
+      const term = searchInput.value.toLowerCase();
+      const filtered = dbData.filter(item =>
+        (item.name && item.name.toLowerCase().includes(term)) ||
+        (item.author && item.author.toLowerCase().includes(term)) ||
+        (item.desc && item.desc.toLowerCase().includes(term))
+      );
+      renderTable(filtered);
+    });
+
+    loadCSV();
+  </script>
+</body>
+</html>
