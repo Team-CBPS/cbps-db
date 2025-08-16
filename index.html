@@ -10,8 +10,7 @@
         th, td { border: 1px solid #ccc; padding: 0.5em; text-align: left; }
         th { background: #e9ecef; }
         tr:nth-child(even) { background: #f1f3f4; }
-        .type-app { color: #0976d7; font-weight: bold; }
-        .type-plugin { color: #be1e37; font-weight: bold; }
+        .icon { width: 48px; height: 48px; object-fit: contain; }
         .download-btn { background: #0976d7; color: #fff; padding: 0.3em 0.8em; border: none; border-radius: 4px; cursor: pointer; text-decoration: none; }
         .download-btn:hover { background: #064785; }
     </style>
@@ -21,12 +20,12 @@
     <table id="cbps-table">
         <thead>
         <tr>
+            <th>Icon</th>
             <th>Name</th>
             <th>Author</th>
             <th>Type</th>
-            <th>Version</th>
-            <th>Description</th>
             <th>Download</th>
+            <th>Readme</th>
         </tr>
         </thead>
         <tbody>
@@ -36,7 +35,6 @@
     <script>
         const CSV_URL = "https://raw.githubusercontent.com/SSMG4/cbps-db/refs/heads/master/cbpsdb.csv";
 
-        // Helper function to parse CSV to objects (simple, assumes no commas inside values)
         function parseCSV(csv) {
             // Remove BOM if present
             if (csv.charCodeAt(0) === 0xfeff) csv = csv.slice(1);
@@ -69,8 +67,18 @@
         }
 
         function createDownloadLink(url, name) {
-            if (!url) return '';
-            return `<a class="download-btn" href="${url}" download="${encodeURIComponent(name)}">Download</a>`;
+            if (!url || url === "None") return '';
+            return `<a class="download-btn" href="${url}" download="${encodeURIComponent(name)}.vpk">Download</a>`;
+        }
+
+        function createReadmeLink(url) {
+            if (!url || url === "None") return '';
+            return `<a href="${url}" target="_blank">Readme</a>`;
+        }
+
+        function createIcon(url, name) {
+            if (!url || url === "None") return '';
+            return `<img class="icon" src="${url}" alt="icon of ${name}">`;
         }
 
         fetch(CSV_URL)
@@ -80,28 +88,25 @@
             })
             .then(csv => {
                 const data = parseCSV(csv);
-                // Heuristics: Type column may be called "Type", "type", or similar - fallback to "App/Plugin"
-                const typeKey = ["Type", "type", "App/Plugin"].find(k => data[0] && k in data[0]) || "Type";
-                const nameKey = ["Name", "name", "Title"].find(k => data[0] && k in data[0]) || "Name";
-                const authorKey = ["Author", "author", "By"].find(k => data[0] && k in data[0]) || "Author";
-                const versionKey = ["Version", "version", "Ver"].find(k => data[0] && k in data[0]) || "Version";
-                const descKey = ["Description", "description", "Desc"].find(k => data[0] && k in data[0]) || "Description";
-                const urlKey = ["URL", "url", "Download"].find(k => data[0] && k in data[0]) || "URL";
-
-                // Sort: apps first, then plugins (or just show all)
                 const tbody = document.querySelector("#cbps-table tbody");
                 tbody.innerHTML = "";
                 data.forEach(row => {
-                    const type = (row[typeKey] || "").toLowerCase();
-                    const typeClass = type.includes("plugin") ? "type-plugin" : "type-app";
+                    // Prefer download_url, fallback to download_url_mirror
+                    const dlUrl = row["download_url"] !== "None" && row["download_url"] ? row["download_url"] : (row["download_url_mirror"] !== "None" ? row["download_url_mirror"] : "");
+                    const iconUrl = row["download_icon0"] !== "None" && row["download_icon0"] ? row["download_icon0"] : "";
+                    const readmeUrl = row["download_readme"] !== "None" && row["download_readme"] ? row["download_readme"] : "";
+
+                    // Only show if visible is True (some rows may be hidden)
+                    if (row["visible"] && row["visible"].toLowerCase() !== "true") return;
+
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
-                        <td>${row[nameKey] || ""}</td>
-                        <td>${row[authorKey] || ""}</td>
-                        <td class="${typeClass}">${row[typeKey] || ""}</td>
-                        <td>${row[versionKey] || ""}</td>
-                        <td>${row[descKey] || ""}</td>
-                        <td>${createDownloadLink(row[urlKey], row[nameKey] || "download")}</td>
+                        <td>${createIcon(iconUrl, row["title"] || "")}</td>
+                        <td>${row["title"] || ""}</td>
+                        <td>${row["credits"] || ""}</td>
+                        <td>${row["type"] || ""}</td>
+                        <td>${createDownloadLink(dlUrl, row["title"] || "download")}</td>
+                        <td>${createReadmeLink(readmeUrl)}</td>
                     `;
                     tbody.appendChild(tr);
                 });
