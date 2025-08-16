@@ -2,10 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>CBPS-DB</title>
+    <title>CbpsDB</title>
     <style>
-        body {
+        html, body {
+            height: 100%;
             margin: 0;
+            padding: 0;
+        }
+        body {
+            min-height: 100%;
             background: linear-gradient(to bottom, #23292d 0%, #0d1012 100%);
             color: #fff;
             font-family: Arial, sans-serif;
@@ -13,63 +18,63 @@
         /* Navbar */
         .navbar {
             background: linear-gradient(to bottom, #49606a 0%, #31424a 100%);
-            padding: 0 0 0 0;
             height: 70px;
             display: flex;
             align-items: center;
             border-bottom: 2px solid #2c3640;
+            padding: 0;
         }
         .navbar-logo {
             height: 60px;
             width: 60px;
-            margin: 0 10px 0 30px;
-            vertical-align: middle;
+            margin: 0 12px 0 26px;
         }
         .navbar-title {
             font-size: 2.1em;
             font-weight: bold;
             letter-spacing: 2px;
-            margin-left: 8px;
+            margin-left: 10px;
             color: #fff;
             text-shadow: 2px 2px 6px #222;
             flex-shrink: 0;
         }
         .navbar-links {
             margin-left: auto;
-            margin-right: 30px;
+            margin-right: 36px;
+            display: flex;
+            gap: 44px;
         }
         .navbar-links a {
             color: #fff;
             text-decoration: underline;
             font-size: 1.7em;
             font-weight: bold;
-            margin-left: 40px;
             transition: color 0.2s;
             text-shadow: 2px 2px 6px #222;
+            cursor: pointer;
         }
-        .navbar-links a:hover {
+        .navbar-links a.active, .navbar-links a:hover {
             color: #ffde7e;
         }
-
-        /* App grid */
+        /* Main grid */
         .container {
             max-width: 1400px;
-            margin: 30px auto 0 auto;
+            margin: 32px auto 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 36px 26px;
-            padding: 0 30px 30px 30px;
+            padding: 0 35px 30px 35px;
+            min-height: 55vh;
         }
         .card {
             background: linear-gradient(180deg, #4a5c76 60%, #3b4658 100%);
             border: 2px solid #222b35;
-            border-radius: 6px;
+            border-radius: 7px;
             box-shadow: 0 0 8px #000a 0;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px 10px 18px 10px;
-            min-height: 370px;
+            padding: 25px 12px 17px 12px;
         }
         .card img {
             width: 110px;
@@ -83,7 +88,7 @@
         }
         .card-title {
             color: #fff;
-            font-size: 1.16em;
+            font-size: 1.2em;
             font-weight: bold;
             text-align: center;
             text-shadow: 1px 1px 6px #181818;
@@ -92,7 +97,7 @@
         .card-author {
             font-size: 1em;
             color: #dfdfdf;
-            margin-bottom: 20px;
+            margin-bottom: 26px;
             font-style: italic;
             text-align: center;
         }
@@ -105,10 +110,10 @@
         }
         .download-btn {
             display: block;
-            width: 90%;
+            width: 94%;
             margin: 0 auto 8px auto;
-            padding: 9px 0;
-            font-size: 1.06em;
+            padding: 10px 0;
+            font-size: 1.11em;
             font-weight: bold;
             border: none;
             border-radius: 4px;
@@ -129,11 +134,12 @@
             width: 100%;
             text-align: center;
             font-size: 0.95em;
-            margin-top: 2px;
+            margin-top: 5px;
+            word-break: break-all;
         }
         .card-extra a {
             color: #ffe4a0;
-            word-break: break-all;
+            text-decoration: underline;
         }
         .card-extra .closed-src {
             color: #d4d4d4;
@@ -149,23 +155,201 @@
                 padding: 10px 3px 12px 3px;
             }
         }
+        /* Section switching */
+        .section {
+            display: none;
+        }
+        .section.active {
+            display: block;
+        }
+        /* Submit Page */
+        .submit-centerbox {
+            background: #4a5c76;
+            border-radius: 12px;
+            border: 2px solid #222b35;
+            margin: 48px auto 0 auto;
+            padding: 32px 0 36px 0;
+            max-width: 820px;
+            text-align: center;
+        }
+        .submit-title {
+            font-size: 1.25em;
+            margin-bottom: 7px;
+            color: #fff;
+        }
+        .submit-divider {
+            color: #fff;
+            font-size: 2em;
+            margin: 0 0 18px 0;
+        }
+        .submit-options {
+            display: flex;
+            justify-content: center;
+            gap: 80px;
+            margin-top: 20px;
+        }
+        .submit-option {
+            background: #495c76;
+            border-radius: 8px;
+            padding: 18px 32px 16px 32px;
+            width: 260px;
+            box-shadow: 0 0 8px #000a 0;
+            border: 2px solid #222b35;
+        }
+        .submit-option img {
+            width: 80px;
+            margin-bottom: 15px;
+        }
+        .submit-option-title {
+            font-size: 1.15em;
+            color: #fff;
+            font-weight: bold;
+        }
+        .submit-option-desc {
+            color: #fff;
+            margin-top: 7px;
+            font-size: 1em;
+        }
+        .submit-option-desc small {
+            color: #eee;
+        }
+        /* Details modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1002;
+            left: 0; top: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.86);
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: linear-gradient(180deg, #4a5c76 60%, #3b4658 100%);
+            border-radius: 10px;
+            border: 2px solid #222b35;
+            max-width: 760px;
+            padding: 34px 34px 26px 34px;
+            color: #fff;
+            position: relative;
+            min-width: 340px;
+        }
+        .modal-close {
+            position: absolute;
+            top: 14px; right: 22px;
+            font-size: 2.1em;
+            color: #fff;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .modal-details-title {
+            font-size: 2em;
+            color: #fff;
+            font-weight: bold;
+            text-align: center;
+        }
+        .modal-details-author {
+            text-align: center;
+            color: #fff;
+            font-size: 1.15em;
+            font-style: italic;
+            margin-bottom: 18px;
+        }
+        .modal-details-readme {
+            font-family: Consolas, monospace;
+            margin: 14px 0 0 0;
+            background: #202634;
+            border-radius: 6px;
+            padding: 12px 12px 12px 18px;
+            font-size: 1em;
+            max-height: 340px;
+            overflow: auto;
+            color: #fff;
+            white-space: pre-wrap;
+        }
+        .modal-details-btnbar {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+            margin-top: 23px;
+            align-items: center;
+        }
+        .modal-details-link {
+            color: #ffe4a0;
+            font-size: 1em;
+            text-decoration: underline;
+        }
+        .modal-details-dl {
+            margin-bottom: 0;
+        }
     </style>
 </head>
 <body>
     <div class="navbar">
-        <!-- Logo: insert your logo path below -->
+        <!-- Replace src with your logo file -->
         <img src="YOUR_LOGO_PATH_HERE" class="navbar-logo" alt="CBPSDB Logo">
         <span class="navbar-title">CbpsDB</span>
         <div class="navbar-links">
-            <a href="apps.php">Apps</a>
-            <a href="plugins.php">Plugins</a>
-            <a href="submit.php">Submit</a>
+            <a href="#" id="nav-apps" class="active" onclick="switchSection('apps');return false;">Apps</a>
+            <a href="#" id="nav-plugins" onclick="switchSection('plugins');return false;">Plugins</a>
+            <a href="#" id="nav-submit" onclick="switchSection('submit');return false;">Submit</a>
         </div>
     </div>
-    <div class="container" id="cbps-container"></div>
+    <div class="section active" id="section-apps">
+        <div class="container" id="apps-container"></div>
+    </div>
+    <div class="section" id="section-plugins">
+        <div class="container" id="plugins-container"></div>
+    </div>
+    <div class="section" id="section-submit">
+        <div class="submit-centerbox">
+            <div class="submit-title">So what are you doing exactly?</div>
+            <div class="submit-divider">-</div>
+            <div class="submit-options">
+                <div class="submit-option">
+                    <img src="submit_edit.png" alt="Edit" />
+                    <div class="submit-option-title">Edit existing entry</div>
+                    <div class="submit-option-desc">
+                        Use this if the software is allready in CbpsDB, but it is outdated.<br>
+                        <small>(eg: if a new version is released)</small>
+                    </div>
+                </div>
+                <div class="submit-option">
+                    <img src="submit_add.png" alt="Add" />
+                    <div class="submit-option-title">Add new entry</div>
+                    <div class="submit-option-desc">
+                        Use this for software that is not listed in CbpsDB.<br>
+                        <small>(eg: it was just released)</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Details Modal -->
+    <div class="modal" id="details-modal">
+        <div class="modal-content">
+            <div class="modal-close" onclick="closeModal()">&times;</div>
+            <div class="modal-details-author" id="modal-author"></div>
+            <div class="modal-details-title" id="modal-title"></div>
+            <div class="modal-details-readme" id="modal-readme"></div>
+            <div class="modal-details-btnbar" id="modal-btnbar"></div>
+            <div class="modal-details-link" id="modal-link"></div>
+        </div>
+    </div>
     <script>
+        // Section switching logic
+        function switchSection(section) {
+            document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+            document.getElementById('section-' + section).classList.add('active');
+            document.querySelectorAll('.navbar-links a').forEach(el => el.classList.remove('active'));
+            document.getElementById('nav-' + section).classList.add('active');
+        }
+        // CSV parsing
         const CSV_URL = "https://raw.githubusercontent.com/SSMG4/cbps-db/refs/heads/master/cbpsdb.csv";
-
+        let allRows = [];
         function parseCSV(csv) {
             if (csv.charCodeAt(0) === 0xfeff) csv = csv.slice(1);
             const lines = csv.split(/\r?\n/).filter(l => l.trim().length > 0);
@@ -194,43 +378,37 @@
                 return obj;
             });
         }
-
+        function isPlugin(row) {
+            let t = (row["type"] || "").toUpperCase();
+            // Accepts SKPRX, SUPRX, PLUGIN, or if title contains "plugin"
+            return t === "SKPRX" || t === "SUPRX" || t === "PLUGIN" || (row.title && row.title.toLowerCase().includes("plugin"));
+        }
+        function isApp(row) {
+            let t = (row["type"] || "").toUpperCase();
+            return t === "VPK" || t === "APP" || (!isPlugin(row) && t !== "");
+        }
         function createCard(row) {
-            // Only show if visible
             if (row["visible"] && row["visible"].toLowerCase() !== "true") return '';
-
             const iconUrl = row["download_icon0"] !== "None" && row["download_icon0"] ? row["download_icon0"] : "defaulticon.png";
             const title = row["title"] || "";
             const author = row["credits"] || "";
             const type = (row["type"] || "").toUpperCase();
-
-            // Download/secondary links
             const downloadUrl = (row["download_url"] && row["download_url"] !== "None") ? row["download_url"] :
                                 (row["download_url_mirror"] && row["download_url_mirror"] !== "None" ? row["download_url_mirror"] : "");
             const srcUrl = (row["download_src"] && row["download_src"] !== "None") ? row["download_src"] :
                            (row["download_src_mirror"] && row["download_src_mirror"] !== "None" ? row["download_src_mirror"] : "");
-            // Is it an app or plugin? (fallback to title if type is empty)
-            let isPlugin = (type === "PLUGIN" || type === "SKPRX" || type === "SUPRX");
-            let isApp = (type === "VPK");
-            let downloadLabel = isPlugin ? "Download PLUGIN" : "Download APP";
-            let cardUrl = isPlugin ? `plugins.php?id=${row["id"]}` : `apps.php?id=${row["id"]}`;
-
-            // DATA downloads (for plugins like reFOOD)
-            let dataUrl = (row["download_data"] && row["download_data"] !== "None") ? row["download_data"] : "";
-
-            // Card bottom extra: src or closed source
+            const dataUrl = (row["download_data"] && row["download_data"] !== "None") ? row["download_data"] : "";
+            let downloadLabel = isPlugin(row) ? "Download PLUGIN" : "Download APP";
+            // Extra SRC/DATA
             let extra = "";
             if (srcUrl) {
                 extra = `<div class="card-extra"><a href="${srcUrl}" target="_blank">${srcUrl}</a></div>`;
             } else {
                 extra = `<div class="card-extra closed-src">CLOSED SRC</div>`;
             }
-            // Optionally add DATA link
-            let dataBtn = dataUrl ? `<a class="download-btn" style="margin-top:2px;" href="${dataUrl}" download>Download DATA</a>` : "";
-
-            // Card element
+            let dataBtn = dataUrl ? `<a class="download-btn" style="margin-top:2px;" href="${dataUrl}" download onclick="event.stopPropagation();">Download DATA</a>` : "";
             return `
-                <div class="card" onclick="window.location='${cardUrl}';" style="cursor:pointer;">
+                <div class="card" tabindex="0" onclick="openDetails('${row.id.replace(/'/g, "\\'")}')" onkeydown="if(event.key==='Enter'){openDetails('${row.id.replace(/'/g, "\\'")}');}">
                     <img src="${iconUrl}" alt="${title} icon" onerror="this.src='defaulticon.png';">
                     <div class="card-title">${title}</div>
                     <div class="card-author">${author}</div>
@@ -242,13 +420,53 @@
                 </div>
             `;
         }
-
+        // Modal details logic
+        function openDetails(id) {
+            let row = allRows.find(r => r.id === id);
+            if (!row) return;
+            document.getElementById('modal-title').innerText = row.title || '';
+            document.getElementById('modal-author').innerText = row.credits || '';
+            document.getElementById('modal-link').innerHTML = (row.download_src && row.download_src !== "None") ? `<a href="${row.download_src}" target="_blank">${row.download_src}</a>` : '';
+            // Download/data buttons
+            let btnbar = "";
+            let downloadUrl = (row["download_url"] && row["download_url"] !== "None") ? row["download_url"] :
+                                (row["download_url_mirror"] && row["download_url_mirror"] !== "None" ? row["download_url_mirror"] : "");
+            let dataUrl = (row["download_data"] && row["download_data"] !== "None") ? row["download_data"] : "";
+            let downloadLabel = isPlugin(row) ? "Download PLUGIN" : "Download APP";
+            if (downloadUrl) btnbar += `<a class="download-btn modal-details-dl" href="${downloadUrl}" download>${downloadLabel}</a>`;
+            if (dataUrl) btnbar += `<a class="download-btn modal-details-dl" href="${dataUrl}" download>Download DATA</a>`;
+            document.getElementById('modal-btnbar').innerHTML = btnbar;
+            // README
+            let readmeUrl = row.download_readme && row.download_readme !== "None" ? row.download_readme : "";
+            let readmeBox = document.getElementById('modal-readme');
+            if (readmeUrl) {
+                fetch(readmeUrl).then(r => r.text()).then(txt => {
+                    readmeBox.innerText = txt;
+                }).catch(() => {
+                    readmeBox.innerText = "Failed to load README.";
+                });
+            } else {
+                readmeBox.innerText = "No readme file found.";
+            }
+            document.getElementById('details-modal').classList.add('active');
+        }
+        function closeModal() {
+            document.getElementById('details-modal').classList.remove('active');
+        }
+        window.onclick = function(e) {
+            if (e.target.classList.contains('modal')) closeModal();
+        }
+        // Main fetch and render
         fetch(CSV_URL)
             .then(r => r.text())
             .then(csv => {
-                const data = parseCSV(csv);
-                const container = document.getElementById("cbps-container");
-                container.innerHTML = data.map(createCard).join('');
+                allRows = parseCSV(csv);
+                // Apps
+                let appsHtml = allRows.filter(isApp).map(createCard).join('');
+                document.getElementById("apps-container").innerHTML = appsHtml;
+                // Plugins
+                let pluginsHtml = allRows.filter(isPlugin).map(createCard).join('');
+                document.getElementById("plugins-container").innerHTML = pluginsHtml;
             });
     </script>
 </body>
