@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>CbpsDB</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css?family=Arial:400,700|Roboto:400,700|Titillium+Web:600,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Titillium+Web:600,700&display=swap" rel="stylesheet">
     <style>
         html, body {
             height: 100%;
@@ -120,7 +119,7 @@
             margin-bottom: 26px;
             font-style: italic;
             text-align: center;
-            font-family: 'Roboto', Arial, sans-serif;
+            font-family: 'Titillium Web', Arial, sans-serif;
         }
         .card-buttons {
             width: 100%;
@@ -153,21 +152,125 @@
             color: #ffd86c;
         }
         .card-extra {
-            width: auto;
             position: absolute;
-            bottom: 14px;
-            right: 18px;
+            bottom: 16px;
+            right: 19px;
             color: #ffe4a0;
             font-size: 1em;
             text-align: right;
-            font-family: 'Roboto', Arial, sans-serif;
-            max-width: 60%;
+            font-family: 'Titillium Web', Arial, sans-serif;
+            max-width: 68%;
             overflow-wrap: anywhere;
         }
         .card-extra.closed-src {
             color: #eee;
         }
-
+        .card-extra a {
+            color: #ffe4a0;
+            text-decoration: underline;
+            font-size: 0.99em;
+            white-space: nowrap;
+        }
+        /* Modal overlay for details page */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0; top: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.78);
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.18s;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-content {
+            background: #4a5c76;
+            border-radius: 12px;
+            border: 2.5px solid #25303b;
+            box-shadow: 0 0 22px #0009;
+            padding: 32px 40px 36px 40px;
+            max-width: 800px;
+            min-width: 340px;
+            color: #fff;
+            position: relative;
+        }
+        .modal-close {
+            position: absolute;
+            top: 14px; right: 22px;
+            font-size: 2.1em;
+            color: #fff;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .modal-content .modal-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 13px;
+        }
+        .modal-content .modal-header img {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background: #fff;
+            border: 2.5px solid #fff;
+            margin-right: 30px;
+            object-fit: contain;
+        }
+        .modal-content .modal-title {
+            font-size: 2.07em;
+            color: #fff;
+            font-weight: bold;
+            font-family: 'Titillium Web', Arial, sans-serif;
+            margin-bottom: 5px;
+        }
+        .modal-content .modal-author {
+            font-size: 1.19em;
+            color: #fff;
+            font-style: italic;
+            font-family: 'Titillium Web', Arial, sans-serif;
+        }
+        .modal-content .modal-btns {
+            margin-top: 16px;
+            margin-bottom: 20px;
+        }
+        .modal-content .modal-btns .download-btn {
+            width: 180px;
+            margin-right: 10px;
+            display: inline-block;
+        }
+        .modal-content .modal-src {
+            color: #ffe4a0;
+            text-align: right;
+            font-size: 1em;
+            position: absolute;
+            bottom: 34px;
+            right: 36px;
+            width: auto;
+            font-family: 'Titillium Web', Arial, sans-serif;
+        }
+        .modal-content .modal-src.closed-src {
+            color: #eee;
+        }
+        .modal-content .modal-src a {
+            color: #ffe4a0;
+            text-decoration: underline;
+            font-size: 0.99em;
+            white-space: nowrap;
+        }
+        .modal-content .modal-readme {
+            background:#202634;
+            color:#fff;
+            border-radius:6px;
+            padding:16px 20px;
+            white-space:pre-wrap;
+            font-family:Consolas,monospace;
+            max-height:340px;
+            overflow:auto;
+            font-size:1.05em;
+            margin-top: 25px;
+        }
         /* Section switching */
         .section {
             display: none;
@@ -175,7 +278,6 @@
         .section.active {
             display: block;
         }
-
         /* Submit Page */
         .submit-centerbox {
             background: #4a5c76;
@@ -246,7 +348,6 @@
 </head>
 <body>
     <div class="navbar">
-        <!-- Replace src with your logo file -->
         <img src="YOUR_LOGO_PATH_HERE" class="navbar-logo" alt="CBPSDB Logo">
         <div class="navbar-titlebox">
             <span class="navbar-tiny">CBPSDB<br>Logo</span>
@@ -288,6 +389,22 @@
             </div>
         </div>
     </div>
+    <!-- Details Modal -->
+    <div class="modal-overlay" id="details-modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <div class="modal-header">
+                <img id="modal-icon" src="" alt="icon">
+                <div>
+                    <div class="modal-author" id="modal-author"></div>
+                    <div class="modal-title" id="modal-title"></div>
+                </div>
+            </div>
+            <div class="modal-btns" id="modal-btns"></div>
+            <div class="modal-src" id="modal-src"></div>
+            <div class="modal-readme" id="modal-readme"></div>
+        </div>
+    </div>
     <script>
         // Section switching logic
         function switchSection(section) {
@@ -295,8 +412,8 @@
             document.getElementById('section-' + section).classList.add('active');
             document.querySelectorAll('.navbar-links a').forEach(el => el.classList.remove('active'));
             document.getElementById('nav-' + section).classList.add('active');
-            // Change URL hash (for deep linking if you wish)
-            // window.location.hash = section;
+            document.body.scrollTop = 0;
+            document.documentElement.scrollTop = 0;
         }
         // CSV parsing
         const CSV_URL = "https://raw.githubusercontent.com/SSMG4/cbps-db/refs/heads/master/cbpsdb.csv";
@@ -351,16 +468,14 @@
             let downloadLabel = isPlugin(row) ? "Download PLUGIN" : "Download APP";
             let extra = "";
             if (srcUrl) {
-                extra = `<a href="${srcUrl}" target="_blank">${srcUrl}</a>`;
+                extra = `<a href="${srcUrl}" target="_blank" onclick="event.stopPropagation();event.preventDefault();">${srcUrl}</a>`;
             } else {
                 extra = `<span class="closed-src">CLOSED SRC</span>`;
             }
-            let cardUrl = section === "apps" 
-                ? `#app/${encodeURIComponent(row.id)}`
-                : `#plugin/${encodeURIComponent(row.id)}`;
             let dataBtn = dataUrl ? `<a class="download-btn" style="margin-top:2px;" href="${dataUrl}" download onclick="event.stopPropagation();">Download DATA</a>` : "";
+            // Instead of hash navigation, open modal
             return `
-                <div class="card" tabindex="0" onclick="window.location='${cardUrl}'" onkeydown="if(event.key==='Enter'){window.location='${cardUrl}'}">
+                <div class="card" tabindex="0" onclick="showDetails('${row.id.replace(/'/g, "\\'")}')" onkeydown="if(event.key==='Enter'){showDetails('${row.id.replace(/'/g, "\\'")}');}">
                     <img src="${iconUrl}" alt="${title} icon" onerror="this.src='defaulticon.png';">
                     <div class="card-title">${title}</div>
                     <div class="card-author">${author}</div>
@@ -372,53 +487,30 @@
                 </div>
             `;
         }
-        // Details page rendering
-        function renderDetailsPage(row, section) {
-            document.body.innerHTML = `
-                <div class="navbar">
-                    <img src="YOUR_LOGO_PATH_HERE" class="navbar-logo" alt="CBPSDB Logo">
-                    <div class="navbar-titlebox">
-                        <span class="navbar-tiny">CBPSDB<br>Logo</span>
-                        <span class="navbar-title">CbpsDB</span>
-                    </div>
-                    <div class="navbar-links">
-                        <a href="index.html#apps" class="${section === 'apps' ? 'active' : ''}">Apps</a>
-                        <a href="index.html#plugins" class="${section === 'plugins' ? 'active' : ''}">Plugins</a>
-                        <a href="index.html#submit" class="${section === 'submit' ? 'active' : ''}">Submit</a>
-                    </div>
-                </div>
-                <div style="margin:48px auto 0 auto;max-width:960px;">
-                    <div style="background:#4a5c76;border-radius:12px;border:2.5px solid #25303b;box-shadow:0 0 22px #0009;padding:32px 36px 36px 36px;">
-                        <div style="display:flex;align-items:center;">
-                            <img src="${row["download_icon0"] !== "None" && row["download_icon0"] ? row["download_icon0"] : "defaulticon.png"}" alt="icon" style="width:110px;height:110px;border-radius:50%;background:#fff;border:2.5px solid #fff;margin-right:32px;">
-                            <div>
-                                <div style="font-size:1.1em;color:#fff;font-style:italic;font-family:'Roboto',Arial,sans-serif;margin-bottom:8px;">
-                                    ${row.credits || ""}
-                                </div>
-                                <div style="font-size:2.1em;color:#fff;font-weight:bold;font-family:'Titillium Web',Arial,sans-serif;margin-bottom:3px;">
-                                    ${row.title || ""}
-                                </div>
-                            </div>
-                        </div>
-                        <div style="margin:24px 0 0 0;">
-                            <a class="download-btn" style="width:240px;display:inline-block;text-align:center;" href="${(row["download_url"] && row["download_url"] !== "None") ? row["download_url"] : (row["download_url_mirror"] && row["download_url_mirror"] !== "None" ? row["download_url_mirror"] : "")}" download>
-                                ${isPlugin(row) ? "Download PLUGIN" : "Download APP"}
-                            </a>
-                            ${(row["download_data"] && row["download_data"] !== "None") ? `<a class="download-btn" style="width:180px;display:inline-block;text-align:center;margin-left:12px;" href="${row["download_data"]}" download>Download DATA</a>` : ""}
-                        </div>
-                        <div style="margin-top:19px;font-size:1.1em;color:#ffe4a0;float:right;">
-                            ${(row["download_src"] && row["download_src"] !== "None") ? `<a href="${row["download_src"]}" target="_blank">${row["download_src"]}</a>` : "CLOSED SRC"}
-                        </div>
-                        <div style="clear:both"></div>
-                        <div id="readme" style="margin-top:26px;background:#202634;color:#fff;border-radius:6px;padding:16px 20px;white-space:pre-wrap;font-family:Consolas,monospace;max-height:420px;overflow:auto;font-size:1.05em;">
-                            Loading README...
-                        </div>
-                    </div>
-                </div>
-            `;
-            // Fetch and insert README
+        // Modal details logic
+        function showDetails(id) {
+            let row = allRows.find(r => r.id === id);
+            if (!row) return;
+            document.getElementById('modal-icon').src = row["download_icon0"] !== "None" && row["download_icon0"] ? row["download_icon0"] : "defaulticon.png";
+            document.getElementById('modal-author').innerText = row.credits || '';
+            document.getElementById('modal-title').innerText = row.title || '';
+            // Download/data buttons
+            let btnbar = "";
+            let downloadUrl = (row["download_url"] && row["download_url"] !== "None") ? row["download_url"] :
+                                (row["download_url_mirror"] && row["download_url_mirror"] !== "None" ? row["download_url_mirror"] : "");
+            let dataUrl = (row["download_data"] && row["download_data"] !== "None") ? row["download_data"] : "";
+            let downloadLabel = isPlugin(row) ? "Download PLUGIN" : "Download APP";
+            if (downloadUrl) btnbar += `<a class="download-btn" href="${downloadUrl}" download>${downloadLabel}</a>`;
+            if (dataUrl) btnbar += `<a class="download-btn" href="${dataUrl}" download>Download DATA</a>`;
+            document.getElementById('modal-btns').innerHTML = btnbar;
+            // SRC
+            let srcUrl = (row["download_src"] && row["download_src"] !== "None") ? row["download_src"] :
+                           (row["download_src_mirror"] && row["download_src_mirror"] !== "None" ? row["download_src_mirror"] : "");
+            document.getElementById('modal-src').innerHTML = srcUrl ? `<a href="${srcUrl}" target="_blank">${srcUrl}</a>` : "<span class='closed-src'>CLOSED SRC</span>";
+            // README
             let readmeUrl = row.download_readme && row.download_readme !== "None" ? row.download_readme : "";
-            let readmeBox = document.getElementById("readme");
+            let readmeBox = document.getElementById('modal-readme');
+            readmeBox.innerText = "Loading README...";
             if (readmeUrl) {
                 fetch(readmeUrl).then(r => r.text()).then(txt => {
                     readmeBox.innerText = txt;
@@ -428,46 +520,14 @@
             } else {
                 readmeBox.innerText = "No readme file found.";
             }
+            document.getElementById('details-modal').classList.add('active');
         }
-        // Routing logic (hash-based)
-        function handleRouting() {
-            let hash = window.location.hash;
-            if (!hash || hash === "#apps") {
-                switchSection('apps');
-                document.body.scrollTop = 0;
-                document.documentElement.scrollTop = 0;
-                return;
-            }
-            if (hash === "#plugins") {
-                switchSection('plugins');
-                document.body.scrollTop = 0;
-                document.documentElement.scrollTop = 0;
-                return;
-            }
-            if (hash === "#submit") {
-                switchSection('submit');
-                document.body.scrollTop = 0;
-                document.documentElement.scrollTop = 0;
-                return;
-            }
-            // Details page:
-            let appMatch = hash.match(/^#app\/(.+)$/);
-            let pluginMatch = hash.match(/^#plugin\/(.+)$/);
-            if (appMatch) {
-                let id = decodeURIComponent(appMatch[1]);
-                let row = allRows.find(r => r.id === id);
-                if (row) renderDetailsPage(row, "apps");
-                return;
-            }
-            if (pluginMatch) {
-                let id = decodeURIComponent(pluginMatch[1]);
-                let row = allRows.find(r => r.id === id);
-                if (row) renderDetailsPage(row, "plugins");
-                return;
-            }
+        function closeModal() {
+            document.getElementById('details-modal').classList.remove('active');
         }
-        window.addEventListener('hashchange', handleRouting);
-
+        window.onclick = function(e) {
+            if (e.target.classList && e.target.classList.contains('modal-overlay')) closeModal();
+        }
         // Main fetch and render
         fetch(CSV_URL)
             .then(r => r.text())
@@ -479,10 +539,7 @@
                 // Plugins
                 let pluginsHtml = allRows.filter(isPlugin).map(r => createCard(r, "plugins")).join('');
                 document.getElementById("plugins-container").innerHTML = pluginsHtml;
-                handleRouting();
             });
-        // Initial routing on page load
-        window.addEventListener('DOMContentLoaded', handleRouting);
     </script>
 </body>
 </html>
