@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CBPS-DB Submit</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 2em; 
+            background: #181a1b; 
+            color: #f5f5f5;
+        }
+        h1 { 
+            text-align: center; 
+            color: #fff; 
+            cursor: pointer;
+            transition: color 0.18s;
+        }
+        h1:hover { color: #ffd86c; }
+        .submit-centerbox {
+            background: #37404a;
+            border-radius: 10px;
+            border: 2px solid #35393b;
+            margin: 56px auto 0 auto;
+            padding: 32px 0 36px 0;
+            max-width: 700px;
+            text-align: center;
+            box-shadow: 0 0 24px #0008;
+        }
+        .submit-title {
+            font-size: 1.18em;
+            margin-bottom: 7px;
+            color: #ffd86c;
+        }
+        .submit-divider {
+            color: #fff;
+            font-size: 2em;
+            margin: 0 0 18px 0;
+        }
+        .submit-options {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            margin-top: 22px;
+        }
+        .submit-option {
+            background: #23292d;
+            border-radius: 8px;
+            padding: 28px 22px 22px 22px;
+            width: 220px;
+            min-width: 180px;
+            box-shadow: 0 0 8px #000a 0;
+            border: 2px solid #35393b;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: box-shadow 0.2s, border-color 0.2s, background 0.2s;
+        }
+        .submit-option:hover {
+            border-color: #ffd86c;
+            box-shadow: 0 0 20px #ffd86c99;
+            background: #2a3036;
+        }
+        .submit-option-title {
+            font-size: 1.04em;
+            color: #fff;
+            font-weight: bold;
+            margin-bottom: 7px;
+        }
+        .submit-option-desc {
+            color: #fff;
+            font-size: 1.01em;
+            margin-top: 6px;
+        }
+        .submit-option-desc small {
+            color: #eee;
+        }
+        .footer-credits {
+            position: fixed;
+            right: 18px;
+            bottom: 8px;
+            font-size: 0.98em;
+            color: #777;
+            z-index: 9999;
+            user-select: none;
+        }
+        .footer-credits a {
+            color: #ffd86c;
+            text-decoration: underline;
+            font-weight: bold;
+            transition: color 0.15s;
+        }
+        .footer-credits a:hover {
+            color: #4eaaff;
+        }
+        .nav-menu {
+            text-align: center;
+            margin-bottom: 14px;
+        }
+        .nav-menu a {
+            color: #ffd86c;
+            text-decoration: underline;
+            font-size: 1.08em;
+            font-weight: bold;
+            margin: 0 24px;
+            transition: color 0.15s;
+        }
+        .nav-menu .active, .nav-menu a:hover {
+            color: #4eaaff;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-menu">
+        <a href="cbps-db2.html">Apps</a>
+        <a href="plugins.html">Plugins</a>
+        <a href="submit.html" class="active">Submit</a>
+    </div>
+    <h1 onclick="window.location.href='https://ssmg4.github.io/cbps-db/'">CBPS-DB</h1>
+    <div class="submit-centerbox">
+        <div class="submit-title">What would you like to do?</div>
+        <div class="submit-divider">-</div>
+        <div class="submit-options">
+            <div class="submit-option" onclick="window.open('https://github.com/SSMG4/cbps-db/issues','_blank')">
+                <div class="submit-option-title">Add new VPK/Plugin</div>
+                <div class="submit-option-desc">
+                    Use this for software that is not listed in CbpsDB.<br>
+                    <small>(eg: it was just released)</small>
+                </div>
+            </div>
+            <div class="submit-option" onclick="window.open('https://github.com/SSMG4/cbps-db/edit/master/cbpsdb.csv','_blank')">
+                <div class="submit-option-title">Edit existing VPK/Plugin</div>
+                <div class="submit-option-desc">
+                    Use this if the software is already in CbpsDB, but it is outdated.<br>
+                    <small>(eg: if a new version is released)</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    <span class="footer-credits">
+        &copy; 2025 <a href="https://github.com/SSMG4" target="_blank">SSMG4</a> &amp; <a href="https://github.com/copilot" target="_blank">GitHub Copilot</a>
+    </span>
+</body>
+</html>
