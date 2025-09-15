@@ -1,4 +1,4 @@
-CBPS DB RFC #1337
+# CBPS DB RFC #1337
 
 cbpsdb is a comma seperated values file, it shall have the following key:
 id,title,credits,download_icon0,download_icon0_mirror,download_url,download_url_mirror,download_readme,download_readme_mirror,download_src,download_src_mirror,time_added,config_type,options,type,depends,visible
@@ -85,3 +85,4 @@ Example PLUGIN Entry:
 DolcePolce,DolcePolce,Dev: SilicaAndPina Beta Testing: Zodasaur & marburg & IcySon55 & froid_san & kirilldevchroma,none,https://github.com/KuromeSan/DolcePolce/releases/download/v1.0/DolcePolce.suprx,https://bitbucket.org/SilicaAndPina/dolcepolce/downloads/DolcePolce.suprx|https://store.brewology.com/vita/get/homebrew.php?id=773&fid=4708,https://raw.githubusercontent.com/KuromeSan/DolcePolce/master/README.md,git@github.com:KuromeSan/DolcePolce.git,1385362251,TAI,*main,PLUGIN,none,True
 Example DATA Entry: 
 NPNA00171,Virtual Terminal,GTAWWEKID & Silica,https://github.com/SilicaAndPina/Virtual-Terminal-PSM-/raw/master/Icon/playstore-icon_128.png,https://github.com/KuromeSan/Virtual-Terminal-PSM-/releases/download/final/VirtualTerminal.psdp,http://psmreborn.com/psdp-packages/NPNA00171.psdp|http://psmreborn.com/psm-psdp/VirtualTerminal.psdp,https://raw.githubusercontent.com/KuromeSan/Virtual-Terminal-PSM-/master/README.md,git@github.com:KuromeSan/Virtual-Terminal-PSM-.git,1184352657,none,ux0:/cache/PCSI00007,DATA,MakePsmGreatAgain,True
+
