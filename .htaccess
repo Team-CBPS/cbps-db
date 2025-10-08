@@ -1,0 +1,4 @@
+<Files ~ "\.(py|sh|lst)$">  
+Order Allow,Deny
+Deny from All
+</Files>
