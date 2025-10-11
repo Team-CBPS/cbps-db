@@ -37,7 +37,6 @@
         }
         tr:nth-child(even) { background: #23292d; }
         tr:nth-child(odd) { background: #202426; }
-        .icon { width: 48px; height: 48px; object-fit: contain; background: #222; border-radius: 5px; }
         .download-btn { 
             background: #0976d7; 
             color: #fff; 
@@ -100,7 +99,6 @@
     <table id="cbps-table">
         <thead>
         <tr>
-            <th>Icon</th>
             <th>Name</th>
             <th>Author</th>
             <th>Download</th>
@@ -157,11 +155,6 @@
             return `<a href="${url}" target="_blank">README</a>`;
         }
 
-        function createIcon(url, name) {
-            if (!url || url === "None") return '';
-            return `<img class="icon" src="${url}" alt="icon of ${name}">`;
-        }
-
         function getSrcStatus(srcUrl) {
             if (srcUrl && srcUrl !== "None") {
                 return `<a href="${srcUrl}" target="_blank" class="src-open">OPEN SRC</a>`;
@@ -190,12 +183,10 @@
 
                     const dlUrl = row["download_url"] !== "None" && row["download_url"] ? row["download_url"] : 
                                   (row["download_url_mirror"] !== "None" ? row["download_url_mirror"] : "");
-                    const iconUrl = row["download_icon0"] !== "None" && row["download_icon0"] ? row["download_icon0"] : "";
                     const readmeUrl = row["download_readme"] !== "None" && row["download_readme"] ? row["download_readme"] : "";
                     const srcUrl = row["download_src"] !== "None" && row["download_src"] ? row["download_src"] : "";
                     const depends = row["depends"] && row["depends"] !== "None" ? row["depends"].trim() : "";
 
-                    // DATA button logic
                     let dataDownloadLink = '';
                     if (depends) {
                         const dataEntry = data.find(d => d["id"] === depends && (d["type"] || "").toUpperCase() === "DATA");
@@ -208,7 +199,6 @@
 
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
-                        <td>${createIcon(iconUrl, row["title"] || "")}</td>
                         <td>${row["title"] || ""}</td>
                         <td>${row["credits"] || ""}</td>
                         <td>${createDownloadLink(dlUrl, row["title"] || "download")}</td>
@@ -220,7 +210,7 @@
                 });
             })
             .catch(err => {
-                document.querySelector("#cbps-table tbody").innerHTML = `<tr><td colspan="7" style="color:red;">Error loading CBPS DB: ${err.message}</td></tr>`;
+                document.querySelector("#cbps-table tbody").innerHTML = `<tr><td colspan="6" style="color:red;">Error loading CBPS DB: ${err.message}</td></tr>`;
             });
     </script>
 </body>
