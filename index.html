@@ -52,8 +52,9 @@
         .download-btn:hover { background: #064785; color: #ffd86c; }
         a { color: #4eaaff; }
         a:hover { color: #ffd86c; }
-        .src-open { color: #8cff8c; font-weight: bold; }
-        .src-closed { color: #ff7c7c; font-weight: bold; }
+        .src-open, .src-closed { font-weight: bold; }
+        .src-open { color: #8cff8c; }
+        .src-closed { color: #ff7c7c; }
         .footer-credits {
             position: fixed;
             right: 18px;
@@ -119,12 +120,10 @@
         const CSV_URL = "https://raw.githubusercontent.com/Team-CBPS/cbps-db/refs/heads/gh-pages/cbpsdb.csv";
 
         function parseCSV(csv) {
-            // Remove BOM if present
             if (csv.charCodeAt(0) === 0xfeff) csv = csv.slice(1);
             const lines = csv.split(/\r?\n/).filter(l => l.trim().length > 0);
             const headers = lines[0].split(",");
             return lines.slice(1).map(line => {
-                // Handle quoted values and commas inside quotes
                 const values = [];
                 let current = "";
                 let inQuotes = false;
@@ -164,21 +163,19 @@
             return `<img class="icon" src="${url}" alt="icon of ${name}">`;
         }
 
-        function getSrcStatus(url) {
-            if (!url) return '';
-            return url.startsWith("https://files.cbps.xyz") ? 
-                `<span class="src-closed">CLOSED SRC</span>` :
-                `<span class="src-open">OPEN SRC</span>`;
+        // ✅ New: Determine SRC status based on download_src
+        function getSrcStatus(srcUrl) {
+            if (srcUrl && srcUrl !== "None") {
+                return `<a href="${srcUrl}" target="_blank" class="src-open">OPEN SRC</a>`;
+            } else {
+                return `<span class="src-closed">CLOSED SRC</span>`;
+            }
         }
 
-        // Only show Apps/VPKs (not plugins/data)
         function isApp(row) {
-            // Types for apps/vpks: VPK, APP, or if type is blank and not plugin/data
             const t = (row["type"] || "").toUpperCase();
             if (t === "VPK" || t === "APP") return true;
-            // Exclude plugins/data
             if (t === "SKPRX" || t === "SUPRX" || t === "PLUGIN" || t === "DATA") return false;
-            // Heuristic: if title mentions "plugin" or "data", skip
             if ((row["title"] || "").toLowerCase().includes("plugin")) return false;
             if ((row["title"] || "").toLowerCase().includes("data")) return false;
             return true;
@@ -194,17 +191,13 @@
                 const tbody = document.querySelector("#cbps-table tbody");
                 tbody.innerHTML = "";
                 data.forEach(row => {
-                    // Only show if visible is True (some rows may be hidden)
                     if (row["visible"] && row["visible"].toLowerCase() !== "true") return;
                     if (!isApp(row)) return;
 
-                    // Prefer download_url, fallback to download_url_mirror
                     const dlUrl = row["download_url"] !== "None" && row["download_url"] ? row["download_url"] : (row["download_url_mirror"] !== "None" ? row["download_url_mirror"] : "");
                     const iconUrl = row["download_icon0"] !== "None" && row["download_icon0"] ? row["download_icon0"] : "";
                     const readmeUrl = row["download_readme"] !== "None" && row["download_readme"] ? row["download_readme"] : "";
-
-                    // Determine SRC status
-                    const srcStatus = getSrcStatus(dlUrl);
+                    const srcUrl = row["download_src"] !== "None" && row["download_src"] ? row["download_src"] : "";
 
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
@@ -214,7 +207,7 @@
                         <td>${row["type"] || ""}</td>
                         <td>${createDownloadLink(dlUrl, row["title"] || "download")}</td>
                         <td>${createReadmeLink(readmeUrl)}</td>
-                        <td style="text-align:right;">${srcStatus}</td>
+                        <td style="text-align:right;">${getSrcStatus(srcUrl)}</td>
                     `;
                     tbody.appendChild(tr);
                 });
