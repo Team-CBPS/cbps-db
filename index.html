@@ -170,14 +170,12 @@
             }
         }
 
-        function isApp(row) {
-            const t = (row["type"] || "").toUpperCase();
-            if (t === "VPK" || t === "APP" || t === "PLUGIN") return true;
-            if (t === "SKPRX" || t === "SUPRX" || t === "DATA") return false;
-            if ((row["title"] || "").toLowerCase().includes("plugin")) return false;
-            if ((row["title"] || "").toLowerCase().includes("data")) return false;
-            return true;
-        }
+function isApp(row) {
+    const t = (row["type"] || "").toUpperCase();
+    // Only VPKs on this page
+    if (t === "VPK") return true;
+    return false;
+}
 
         fetch(CSV_URL)
             .then(r => {
