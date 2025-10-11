@@ -103,14 +103,13 @@
             <th>Icon</th>
             <th>Name</th>
             <th>Author</th>
-            <th>Type</th>
             <th>Download</th>
+            <th>DATA</th>
             <th>README</th>
             <th>Source</th>
         </tr>
         </thead>
         <tbody>
-        <!-- Data will be inserted here -->
         </tbody>
     </table>
     <span class="footer-credits">
@@ -148,9 +147,9 @@
             });
         }
 
-        function createDownloadLink(url, name) {
+        function createDownloadLink(url, name, label = "Download") {
             if (!url || url === "None") return '';
-            return `<a class="download-btn" href="${url}" download="${encodeURIComponent(name)}.vpk">Download</a>`;
+            return `<a class="download-btn" href="${url}" download="${encodeURIComponent(name)}.vpk">${label}</a>`;
         }
 
         function createReadmeLink(url) {
@@ -163,7 +162,6 @@
             return `<img class="icon" src="${url}" alt="icon of ${name}">`;
         }
 
-        // ✅ New: Determine SRC status based on download_src
         function getSrcStatus(srcUrl) {
             if (srcUrl && srcUrl !== "None") {
                 return `<a href="${srcUrl}" target="_blank" class="src-open">OPEN SRC</a>`;
@@ -174,8 +172,8 @@
 
         function isApp(row) {
             const t = (row["type"] || "").toUpperCase();
-            if (t === "VPK" || t === "APP") return true;
-            if (t === "SKPRX" || t === "SUPRX" || t === "PLUGIN" || t === "DATA") return false;
+            if (t === "VPK" || t === "APP" || t === "PLUGIN") return true;
+            if (t === "SKPRX" || t === "SUPRX" || t === "DATA") return false;
             if ((row["title"] || "").toLowerCase().includes("plugin")) return false;
             if ((row["title"] || "").toLowerCase().includes("data")) return false;
             return true;
@@ -198,14 +196,28 @@
                     const iconUrl = row["download_icon0"] !== "None" && row["download_icon0"] ? row["download_icon0"] : "";
                     const readmeUrl = row["download_readme"] !== "None" && row["download_readme"] ? row["download_readme"] : "";
                     const srcUrl = row["download_src"] !== "None" && row["download_src"] ? row["download_src"] : "";
+                    const depends = row["depends"] && row["depends"] !== "None" ? row["depends"].trim() : "";
+
+                    // 🔹 DATA button logic
+                    let dataDownloadLink = '';
+                    if (depends) {
+                        const dataEntry = data.find(d => d["id"] === depends && (d["type"] || "").toUpperCase() === "DATA");
+                        if (dataEntry) {
+                            const dataUrl = dataEntry["download_url"] !== "None" && dataEntry["download_url"] ? dataEntry["download_url"] : 
+                                            (dataEntry["download_url_mirror"] !== "None" ? dataEntry["download_url_mirror"] : "");
+                            if (dataUrl) {
+                                dataDownloadLink = createDownloadLink(dataUrl, dataEntry["title"] || "data", "DATA");
+                            }
+                        }
+                    }
 
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                         <td>${createIcon(iconUrl, row["title"] || "")}</td>
                         <td>${row["title"] || ""}</td>
                         <td>${row["credits"] || ""}</td>
-                        <td>${row["type"] || ""}</td>
                         <td>${createDownloadLink(dlUrl, row["title"] || "download")}</td>
+                        <td>${dataDownloadLink}</td>
                         <td>${createReadmeLink(readmeUrl)}</td>
                         <td style="text-align:right;">${getSrcStatus(srcUrl)}</td>
                     `;
