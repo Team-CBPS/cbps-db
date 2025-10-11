@@ -52,8 +52,9 @@
         .download-btn:hover { background: #064785; color: #ffd86c; }
         a { color: #4eaaff; }
         a:hover { color: #ffd86c; }
-        .src-open { color: #8cff8c; font-weight: bold; }
-        .src-closed { color: #ff7c7c; font-weight: bold; }
+        .src-open, .src-closed { font-weight: bold; }
+        .src-open { color: #8cff8c; }
+        .src-closed { color: #ff7c7c; }
         .footer-credits {
             position: fixed;
             right: 18px;
@@ -102,14 +103,13 @@
             <th>Icon</th>
             <th>Name</th>
             <th>Author</th>
-            <th>Type</th>
             <th>Download</th>
+            <th>DATA</th>
             <th>README</th>
             <th>SRC</th>
         </tr>
         </thead>
         <tbody>
-        <!-- Data will be inserted here -->
         </tbody>
     </table>
     <span class="footer-credits">
@@ -147,9 +147,9 @@
             });
         }
 
-        function createDownloadLink(url, name) {
+        function createDownloadLink(url, name, label = "Download") {
             if (!url || url === "None") return '';
-            return `<a class="download-btn" href="${url}" download="${encodeURIComponent(name)}.vpk">Download</a>`;
+            return `<a class="download-btn" href="${url}" download="${encodeURIComponent(name)}.vpk">${label}</a>`;
         }
 
         function createReadmeLink(url) {
@@ -162,29 +162,17 @@
             return `<img class="icon" src="${url}" alt="icon of ${name}">`;
         }
 
-        function getSrcStatus(url) {
-            if (!url) return '';
-            return url.startsWith("https://files.cbps.xyz") ? 
-                `<span class="src-closed">CLOSED SRC</span>` :
-                `<span class="src-open">OPEN SRC</span>`;
+        function getSrcStatus(srcUrl) {
+            if (srcUrl && srcUrl !== "None") {
+                return `<a href="${srcUrl}" target="_blank" class="src-open">OPEN SRC</a>`;
+            } else {
+                return `<span class="src-closed">CLOSED SRC</span>`;
+            }
         }
 
-        // Only show Plugins (not apps/vpks/data)
         function isPlugin(row) {
-            // Types for plugins: SKPRX, SUPRX, PLUGIN, or DATA if it's plugin data (see below)
             const t = (row["type"] || "").toUpperCase();
-            if (t === "SKPRX" || t === "SUPRX" || t === "PLUGIN") return true;
-            // Heuristic: if title mentions "plugin", treat as plugin
-            if ((row["title"] || "").toLowerCase().includes("plugin")) return true;
-            // DATA: Try to include only if it's data for a plugin
-            if (t === "DATA") {
-                // Heuristic: if depends field mentions a plugin id, or title mentions plugin
-                if ((row["depends"] || "").toLowerCase().includes("plugin")) return true;
-                if ((row["title"] || "").toLowerCase().includes("plugin")) return true;
-                // Or, if credits (author) is a plugin author (not perfect, but best effort)
-                return false;
-            }
-            return false;
+            return t === "PLUGIN" || t === "SKPRX" || t === "SUPRX";
         }
 
         fetch(CSV_URL)
@@ -197,27 +185,36 @@
                 const tbody = document.querySelector("#cbps-table tbody");
                 tbody.innerHTML = "";
                 data.forEach(row => {
-                    // Only show if visible is True (some rows may be hidden)
                     if (row["visible"] && row["visible"].toLowerCase() !== "true") return;
                     if (!isPlugin(row)) return;
 
-                    // Prefer download_url, fallback to download_url_mirror
-                    const dlUrl = row["download_url"] !== "None" && row["download_url"] ? row["download_url"] : (row["download_url_mirror"] !== "None" ? row["download_url_mirror"] : "");
+                    const dlUrl = row["download_url"] !== "None" && row["download_url"] ? row["download_url"] : 
+                                  (row["download_url_mirror"] !== "None" ? row["download_url_mirror"] : "");
                     const iconUrl = row["download_icon0"] !== "None" && row["download_icon0"] ? row["download_icon0"] : "";
                     const readmeUrl = row["download_readme"] !== "None" && row["download_readme"] ? row["download_readme"] : "";
+                    const srcUrl = row["download_src"] !== "None" && row["download_src"] ? row["download_src"] : "";
+                    const depends = row["depends"] && row["depends"] !== "None" ? row["depends"].trim() : "";
 
-                    // Determine SRC status
-                    const srcStatus = getSrcStatus(dlUrl);
+                    // DATA button logic
+                    let dataDownloadLink = '';
+                    if (depends) {
+                        const dataEntry = data.find(d => d["id"] === depends && (d["type"] || "").toUpperCase() === "DATA");
+                        if (dataEntry) {
+                            const dataUrl = dataEntry["download_url"] !== "None" && dataEntry["download_url"] ? dataEntry["download_url"] : 
+                                            (dataEntry["download_url_mirror"] !== "None" ? dataEntry["download_url_mirror"] : "");
+                            if (dataUrl) dataDownloadLink = createDownloadLink(dataUrl, dataEntry["title"] || "data", "DATA");
+                        }
+                    }
 
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                         <td>${createIcon(iconUrl, row["title"] || "")}</td>
                         <td>${row["title"] || ""}</td>
                         <td>${row["credits"] || ""}</td>
-                        <td>${row["type"] || ""}</td>
                         <td>${createDownloadLink(dlUrl, row["title"] || "download")}</td>
+                        <td>${dataDownloadLink}</td>
                         <td>${createReadmeLink(readmeUrl)}</td>
-                        <td style="text-align:right;">${srcStatus}</td>
+                        <td style="text-align:right;">${getSrcStatus(srcUrl)}</td>
                     `;
                     tbody.appendChild(tr);
                 });
