@@ -157,10 +157,14 @@
             return `<a href="${url}" target="_blank">README</a>`;
         }
 
-        function createIcon(url, name) {
-            if (!url || url === "None") return '';
-            return `<img class="icon" src="${url}" alt="icon of ${name}">`;
-        }
+function createIcon(url, name) {
+    if (!url || url === "None" || url.trim() === "") {
+        return `<span style="color:#ff7c7c; font-weight:bold;">Missing Icon</span>`;
+    } else {
+        return `<img class="icon" src="${url}" alt="icon of ${name}" 
+                     onerror="this.outerHTML='<span style=&quot;color:#ff7c7c;font-weight:bold;&quot;>Unreachable Icon</span>';">`;
+    }
+}
 
         function getSrcStatus(srcUrl) {
             if (srcUrl && srcUrl !== "None") {
