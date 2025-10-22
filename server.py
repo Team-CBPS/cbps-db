@@ -23,7 +23,7 @@ db = []
 def FetchDB():
     global db
     while True:
-        r = s.get("https://raw.githubusercontent.com/Team-CBPS/cbps-db/master/cbpsdb.csv")
+        r = s.get("https://raw.githubusercontent.com/Team-CBPS/cbps-db/main/cbpsdb.csv")
         reader = csv.DictReader(r.text.splitlines()[1:], r.text.split("\n")[0].split(","))
         db = []
         for row in reader:
