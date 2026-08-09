@@ -4,10 +4,10 @@ include("dbparser.php");
 ?>
 <script type="text/javascript" src="lib/zip.js"></script>
 <script type="text/javascript" src="lib/zip-ext.js"></script>
-<script type="text/javascript" src="script-pako.js"></script>
-<script type="text/javascript" src="script-self.js"></script>
-<script type="text/javascript" src="script-sfo.js"></script>
-<script type="text/javascript" src="script-sha256.js"></script>
+<script type="text/javascript" src="pako.js"></script>
+<script type="text/javascript" src="self.js"></script>
+<script type="text/javascript" src="sfo.js"></script>
+<script type="text/javascript" src="sha256.js"></script>
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
 <script>zip.workerScriptsPath = "lib/";</script>
@@ -1078,7 +1078,7 @@ window.addEventListener('load', function () {
 					<input type="text" id="download_readme" name="download_readme" value="None" hidden="true">
 					<input type="submit" value="Submit" hidden="true">
 					<div id="captcha" class="submit-captcha">
-						<div class="g-recaptcha" data-sitekey="YOUR_RECAPTCHA_HTML_KEY_HERE"></div>
+						<div class="g-recaptcha" data-sitekey="<?php echo(htmlspecialchars(env('RECAPTCHA_SITE_KEY'),ENT_QUOTES)); ?>"></div>
 					</div>
 				</form> 
 				<button onclick="confirm_submit()" id="verify_submit" class="submit-button">Submit to CbpsDB!</button>

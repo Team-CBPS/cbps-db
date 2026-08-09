@@ -1,4 +1,3 @@
-<Files ~ "\.(py|sh|lst)$">  
-Order Allow,Deny
-Deny from All
+<Files ~ "\.(py|sh|lst|env)$">  
+Require all denied
 </Files>

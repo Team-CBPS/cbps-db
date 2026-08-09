@@ -1,12 +1,17 @@
 import requests
 from lxml import html
 import sys
+import os
+from dotenv import load_dotenv
 
-import secrets
+load_dotenv()
 
-REPO_OWNER = "git-username"
+LOGIN_USERNAME = os.environ["GITHUB_USERNAME"]
+LOGIN_PASSWORD = os.environ["GITHUB_PASSWORD"]
+
+REPO_OWNER = "Team-CBPS"
 MERGE_WITH_MASTER = sys.argv[1]
-MASTER_BRANCH = "master"
+MASTER_BRANCH = "main"
 
 header = {"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.129 Safari/537.36;",
 		"Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
@@ -44,7 +49,7 @@ postdata = {"commit":"Sign+In",
 postreq = githubSession.post("https://github.com/session",headers=header,data=postdata)
 #print(postreq.status_code)
 
-pullRequestPageRequest = githubSession.get('https://github.com/git-username/git-repo/pull/new/'+MERGE_WITH_MASTER,headers=header)
+pullRequestPageRequest = githubSession.get('https://github.com/Team-CBPS/cbps-db/pull/new/'+MERGE_WITH_MASTER,headers=header)
 
 htmlTree = html.fromstring(pullRequestPageRequest.content)
 authenticity_token = htmlTree.xpath('//*[@id="new_pull_request"]/input[1]')[0].get('value')
@@ -76,7 +81,7 @@ postdata = {"authenticity_token":authenticity_token,
 			"draft":"off",
 			"quick_pull":""}
 
-pullRequestRequest = githubSession.post('https://github.com/git-username/git-repo/pull/create?base='+REPO_OWNER+':'+MASTER_BRANCH+'&head='+REPO_OWNER+':'+MERGE_WITH_MASTER,data=postdata,headers=header)
+pullRequestRequest = githubSession.post('https://github.com/Team-CBPS/cbps-db/pull/create?base='+REPO_OWNER+':'+MASTER_BRANCH+'&head='+REPO_OWNER+':'+MERGE_WITH_MASTER,data=postdata,headers=header)
 
 #print(pullRequestRequest.status_code)
 

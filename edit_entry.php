@@ -392,7 +392,7 @@ if(isset($_GET['id']))
 				<input type="text" id="download_readme" name="download_readme" value="'.htmlspecialchars($csv[DOWNLOAD_README],ENT_QUOTES).'" hidden="true">
 				<input type="submit" value="Submit" hidden="true">
 				<div id="captcha" class="submit-captcha">
-					<div class="g-recaptcha" data-sitekey="YOUR_RECAPTCHA_HTML_KEY_HERE"></div>
+					<div class="g-recaptcha" data-sitekey="'.htmlspecialchars(env('RECAPTCHA_SITE_KEY'),ENT_QUOTES).'"></div>
 				</div>
 			</form>					
 			<button onclick="confirm_submit()" id="verify_submit" class="submit-button">Confirm</button>

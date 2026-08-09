@@ -1,5 +1,7 @@
 <?php
 
+require_once(__DIR__."/env.php");
+
 define("ID",0);
 define("TITLE",1);
 define("CREDITS",2);
@@ -26,7 +28,7 @@ function update_csv()
 	$csvTime = filemtime("cbpsdb.csv");
 	if(time() > ($csvTime + 600))
 	{
-		$csvData = file_get_contents("https://raw.githubusercontent.com/git-username/git-repo/master/cbpsdb.csv");
+		$csvData = file_get_contents("https://raw.githubusercontent.com/Team-CBPS/cbps-db/refs/heads/main/cbpsdb.csv");
 		if(strcmp($http_response_header[0],"HTTP/1.1 200 OK" == 0))
 			file_put_contents("cbpsdb.csv",$csvData);
 	}

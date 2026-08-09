@@ -1,2 +1,3 @@
 git/secrets.py
 git/push_latest.sh
+.env

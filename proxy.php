@@ -30,8 +30,7 @@ $allowed_hosts = [
     'github.com',
     'raw.githubusercontent.com',
     'drive.google.com',
-    'gist.githubusercontent.com',
-    'example.com'
+    'gist.githubusercontent.com'
 ];
 
 $parsed_url = parse_url($url);
