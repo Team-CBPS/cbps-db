@@ -3,4 +3,4 @@ Allow: /
 Disallow: /referer-proxy.php
 Disallow: /referer-proxy.php?url=*
 Disallow: /create_pr.py
-Sitemap: https://cbps-db.gt.tc/sitemap.xml
+Sitemap: https://db.cbps.dpdns.org/sitemap.xml

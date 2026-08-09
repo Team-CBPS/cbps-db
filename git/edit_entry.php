@@ -23,7 +23,7 @@ if(isset($_POST["g-recaptcha-response"]))
 		echo "Recaptcha was not solved successfully.";
 		die();
 	} else if ($captcha_success->success==true) {
-		if(strcmp($captcha_success->hostname,"cbps-db.gt.tc") !== 0)
+		if(strcmp($captcha_success->hostname,"db.cbps.dpdns.org") !== 0)
 		{
 			echo("Recaptcha returned incorrect hostname.");
 			die();	
